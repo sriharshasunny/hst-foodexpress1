@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodie Haven - Restaurant Discovery</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="cart-wishlist-container">
+        <button class="cart-wishlist-btn" onclick="togglePanel('cart')">
+            🛒
+            <span class="cart-wishlist-badge" id="cart-count">0</span>
+        </button>
+        <button class="cart-wishlist-btn" onclick="togglePanel('wishlist')">
+            ❤️
+            <span class="cart-wishlist-badge" id="wishlist-count">0</span>
+        </button>
+    </div>
+
+    <div class="cart-wishlist-panel" id="cart-panel">
+        <div class="cart-wishlist-header">
+            <h2 class="cart-wishlist-title">Your Cart</h2>
+            <button class="close-panel" onclick="togglePanel('cart')">✕</button>
+        </div>
+        <div class="cart-wishlist-items" id="cart-items"></div>
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">$0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery Fee</span>
+                <span id="delivery-fee">$2.99</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <div class="order-options">
+                <div class="order-option" onclick="selectOrderOption('delivery')">
+                    <input type="radio" name="order-type" id="delivery" checked>
+                    <label for="delivery">Delivery</label>
+                    <i>🚚</i>
+                </div>
+                <div class="order-option" onclick="selectOrderOption('pickup')">
+                    <input type="radio" name="order-type" id="pickup">
+                    <label for="pickup">Pickup</label>
+                    <i>🏪</i>
+                </div>
+                <div class="order-option" onclick="selectOrderOption('dine-in')">
+                    <input type="radio" name="order-type" id="dine-in">
+                    <label for="dine-in">Dine-in</label>
+                    <i>🍽️</i>
+                </div>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div class="cart-wishlist-panel" id="wishlist-panel">
+        <div class="cart-wishlist-header">
+            <h2 class="cart-wishlist-title">
+                <i class="material-icons">favorite</i>
+                Your Wishlist
+            </h2>
+            <button class="close-panel" onclick="togglePanel('wishlist')">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="wishlist-items"></div>
+    </div>
+
+    <div class="sidebar-container">
+        <div class="sidebar-menu">
+            <a href="#" class="sidebar-menu-item active" onclick="showSection('home')">
+                <i class="material-icons">home</i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="sidebar-menu-item" onclick="showSection('restaurants')">
+                <i class="material-icons">restaurant</i>
+                <span>Restaurants</span>
+            </a>
+            <a href="#" class="sidebar-menu-item" onclick="showSection('contact')">
+                <i class="material-icons">contact_support</i>
+                <span>Contact</span>
+            </a>
+            <a href="#" class="sidebar-menu-item" onclick="showSection('bill')">
+                <i class="material-icons">receipt</i>
+                <span>Bill</span>
+            </a>
+            <a href="#" class="sidebar-menu-item" onclick="showSection('settings')">
+                <i class="material-icons">settings</i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="sidebar-menu-item" onclick="logout()">
+                <i class="material-icons">logout</i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="material-icons">menu</i>
+    </button>
+
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" class="logo">Foodie Haven</a>
+                <ul class="nav-links">
+                    <li><a href="#" onclick="showSection('home')" class="active">Home</a></li>
+                    <li><a href="#" onclick="showSection('restaurants')">Restaurants</a></li>
+                    <li><a href="#" onclick="showSection('about')">About</a></li>
+                    <li><a href="#" onclick="showSection('contact')">Contact</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <div class="nav-search">
+                    <input type="text" placeholder="Search food..." oninput="searchFood(event, 'nav')">
+                    <button><i class="material-icons">search</i></button>
+                    <div class="search-results"></div>
+                </div>
+                <div class="nav-icon" onclick="togglePanel('cart')">
+                    <i class="material-icons">shopping_cart</i>
+                    <span class="nav-icon-badge" id="nav-cart-count">0</span>
+                </div>
+                <div class="nav-icon" onclick="togglePanel('wishlist')">
+                    <i class="material-icons">favorite</i>
+                    <span class="nav-icon-badge" id="nav-wishlist-count">0</span>
+                </div>
+                <div class="profile-icon" onclick="showProfile()">
+                    <i class="material-icons">person</i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content-wrapper">
+        <!-- Top Image Section -->
+        <div class="top-image">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Delicious Food">
+            <div class="top-image-overlay">
+                <h1 class="top-image-title">Discover Delicious Food</h1>
+                <p class="top-image-subtitle">Explore our curated selection of the finest restaurants and mouthwatering dishes from around the world.</p>
+                <a href="#restaurants" class="top-image-btn">Explore Restaurants</a>
+            </div>
+        </div>
+
+        <main>
+            <section id="home" class="section active">
+                <div class="hero-slider">
+                    <div class="slide">
+                        <div class="slide-content">
+                            <h1>Discover Amazing Food Near You</h1>
+                            <p>From local favorites to culinary adventures</p>
+                            <div class="search-container">
+                                <input type="text" class="search-input" placeholder="Search for dishes or restaurants..." oninput="searchFood(event, 'hero')">
+                                <button class="search-btn">
+                                    <i class="material-icons">search</i>
+                                </button>
+                                <div class="search-results"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="home-content">
+                    <div class="recommendations-section">
+                        <div class="recommendations-header">
+                            <h2 class="recommendations-title">Recommended for You</h2>
+                            <div class="recommendations-scroll">
+                                <button class="scroll-btn" onclick="scrollRecommendations('left')">
+                                    <i class="material-icons">chevron_left</i>
+                                </button>
+                                <button class="scroll-btn" onclick="scrollRecommendations('right')">
+                                    <i class="material-icons">chevron_right</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="recommendations-grid" id="recommendations-grid"></div>
+                    </div>
+
+                    <div class="main-content">
+                        <div class="pre-row-cards">
+                            <div class="pre-row-card" onclick="sortItems('rating')">
+                                <i class="material-icons">star</i>
+                                <span>Top Rated</span>
+                            </div>
+                            <div class="pre-row-card" onclick="sortItems('price-low')">
+                                <i class="material-icons">arrow_upward</i>
+                                <span>Price: Low to High</span>
+                            </div>
+                            <div class="pre-row-card" onclick="sortItems('price-high')">
+                                <i class="material-icons">arrow_downward</i>
+                                <span>Price: High to Low</span>
+                            </div>
+                            <div class="pre-row-card" onclick="sortItems('delivery')">
+                                <i class="material-icons">delivery_dining</i>
+                                <span>Fastest Delivery</span>
+                            </div>
+                            <div class="pre-row-card" onclick="sortItems('popularity')">
+                                <i class="material-icons">trending_up</i>
+                                <span>Most Popular</span>
+                            </div>
+                        </div>
+
+                        <div class="filters-section">
+                            <div class="filter-categories">
+                                <div class="filter-option" onclick="filterFood('all')" data-category="all">
+                                    <i class="material-icons">grid_view</i>
+                                    <span>All</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('burgers')" data-category="burgers">
+                                    <i class="material-icons">lunch_dining</i>
+                                    <span>Burgers</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('pizza')" data-category="pizza">
+                                    <i class="material-icons">local_pizza</i>
+                                    <span>Pizza</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('pasta')" data-category="pasta">
+                                    <i class="material-icons">restaurant</i>
+                                    <span>Pasta</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('salads')" data-category="salads">
+                                    <i class="material-icons">eco</i>
+                                    <span>Salads</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('desserts')" data-category="desserts">
+                                    <i class="material-icons">cake</i>
+                                    <span>Desserts</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('drinks')" data-category="drinks">
+                                    <i class="material-icons">local_bar</i>
+                                    <span>Drinks</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('vegan')" data-category="vegan">
+                                    <i class="material-icons">spa</i>
+                                    <span>Vegan</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('breakfast')" data-category="breakfast">
+                                    <i class="material-icons">free_breakfast</i>
+                                    <span>Breakfast</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('seafood')" data-category="seafood">
+                                    <i class="material-icons">set_meal</i>
+                                    <span>Seafood</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('asian')" data-category="asian">
+                                    <i class="material-icons">ramen_dining</i>
+                                    <span>Asian</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('biryani')" data-category="biryani">
+                                    <i class="material-icons">rice_bowl</i>
+                                    <span>Biryani</span>
+                                </div>
+                                <div class="filter-option" onclick="filterFood('mexican')" data-category="mexican">
+                                    <i class="material-icons">fastfood</i>
+                                    <span>Mexican</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="food-items-grid" id="food-items-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Restaurant Section -->
+            <section id="restaurants" class="section">
+                <div class="restaurant-search">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search for restaurants, cuisines, or dishes..." id="restaurantSearch">
+                    </div>
+                    <div class="search-filters">
+                        <div class="search-filter active">
+                            <i class="fas fa-utensils"></i>
+                            All Restaurants
+                        </div>
+                        <div class="search-filter">
+                            <i class="fas fa-star"></i>
+                            Top Rated
+                        </div>
+                        <div class="search-filter">
+                            <i class="fas fa-clock"></i>
+                            Fast Delivery
+                        </div>
+                        <div class="search-filter">
+                            <i class="fas fa-percent"></i>
+                            Offers
+                        </div>
+                        <div class="search-filter">
+                            <i class="fas fa-leaf"></i>
+                            Pure Veg
+                        </div>
+                    </div>
+                </div>
+
+                <div class="restaurant-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title">Featured Restaurants</h2>
+                            <p class="section-subtitle">Discover the best dining experiences in your area</p>
+                        </div>
+                        <button class="view-all-btn">
+                            View All
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="restaurant-grid" id="restaurant-grid">
+                        <!-- Restaurant cards will be dynamically added here -->
+                    </div>
+
+                    <div class="restaurant-scroll-controls">
+                        <button class="scroll-btn scroll-left" onclick="scrollRestaurants('left')">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="scroll-btn scroll-right" onclick="scrollRestaurants('right')">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Menu Display Section -->
+                <div class="menu-display" id="menu-display">
+                    <div class="menu-header">
+                        <div class="menu-header-info">
+                            <h2 class="menu-title">All Menu Items</h2>
+                            <p class="menu-cuisine">Browse through our delicious menu items</p>
+                        </div>
+                        <button class="reset-menu-btn" onclick="resetMenuDisplay()">
+                            <i class="material-icons">refresh</i>
+                            Show All Items
+                        </button>
+                    </div>
+                    <div class="menu-content">
+                        <div class="menu-categories">
+                            <div class="menu-category active" onclick="filterMenuItems('all')">All Items</div>
+                            <div class="menu-category" onclick="filterMenuItems('popular')">Popular</div>
+                            <div class="menu-category" onclick="filterMenuItems('starters')">Starters</div>
+                            <div class="menu-category" onclick="filterMenuItems('main')">Main Course</div>
+                            <div class="menu-category" onclick="filterMenuItems('desserts')">Desserts</div>
+                            <div class="menu-category" onclick="filterMenuItems('drinks')">Beverages</div>
+                        </div>
+                        <div class="menu-items" id="menu-items">
+                            <!-- Menu items will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="section">
+                <div class="about-content">
+                    <h2>About Foodie Haven</h2>
+                    <p>Welcome to Foodie Haven, your ultimate destination for exploring the finest culinary experiences in town. Founded in 2023, our mission is to connect food lovers with exceptional restaurants that offer unforgettable dining experiences.</p>
+                    <p>We carefully select each restaurant on our platform, ensuring they meet our high standards for quality, service, and ambiance. Whether you're looking for a casual brunch spot, an elegant dinner destination, or something in between, Foodie Haven has you covered.</p>
+                    <p>Our team of food enthusiasts is constantly exploring new venues and updating our collection to bring you the latest and greatest in the culinary world. We believe that great food brings people together, and we're passionate about helping you discover your next favorite restaurant.</p>
+                </div>
+            </section>
+
+            <section id="contact" class="section">
+                <div class="contact-content">
+                    <h2>Get in Touch</h2>
+                    <p>Have questions, suggestions, or feedback? We'd love to hear from you!</p>
+                    <div class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" placeholder="Your Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Your Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" placeholder="Your Message"></textarea>
+                        </div>
+                        <button class="btn" onclick="showToast('Message sent successfully!')">Send Message</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <h3 class="footer-logo">FoodieHub</h3>
+                    <p class="footer-description">Your ultimate destination for discovering the best restaurants and food experiences. We bring you the finest culinary delights from around the world.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon"><i class="material-icons">facebook</i></a>
+                        <a href="#" class="social-icon"><i class="material-icons">twitter</i></a>
+                        <a href="#" class="social-icon"><i class="material-icons">instagram</i></a>
+                        <a href="#" class="social-icon"><i class="material-icons">youtube</i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links-section">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="#">Home</a></li>
+                        <li class="footer-link"><a href="#restaurants">Restaurants</a></li>
+                        <li class="footer-link"><a href="#">About Us</a></li>
+                        <li class="footer-link"><a href="#">Contact</a></li>
+                        <li class="footer-link"><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links-section">
+                    <h4 class="footer-title">Categories</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="#">Italian</a></li>
+                        <li class="footer-link"><a href="#">Indian</a></li>
+                        <li class="footer-link"><a href="#">Chinese</a></li>
+                        <li class="footer-link"><a href="#">Mexican</a></li>
+                        <li class="footer-link"><a href="#">Desserts</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-contact-section">
+                    <h4 class="footer-title">Contact Us</h4>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="material-icons">location_on</i></div>
+                            <span>123 Food Street, Cuisine City</span>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="material-icons">phone</i></div>
+                            <span>+1 234 567 8900</span>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="material-icons">email</i></div>
+                            <span>info@foodiehub.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 FoodieHub. All Rights Reserved. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Payment Options</h2>
+                <button class="close-modal" onclick="closePaymentModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="payment-order-items"></div>
+                    <div class="order-totals">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="payment-subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee</span>
+                            <span id="payment-delivery-fee">$2.99</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="payment-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-options">
+                    <h3>Select Payment Method</h3>
+                    <div class="payment-method-options">
+                        <div class="payment-method" onclick="selectPaymentMethod('card')">
+                            <input type="radio" name="payment-method" id="card-payment" checked>
+                            <label for="card-payment">
+                                <i class="material-icons">credit_card</i>
+                                Credit/Debit Card
+                            </label>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('online')">
+                            <input type="radio" name="payment-method" id="online-payment">
+                            <label for="online-payment">
+                                <i class="material-icons">account_balance</i>
+                                Online Banking
+                            </label>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('cash')">
+                            <input type="radio" name="payment-method" id="cash-payment">
+                            <label for="cash-payment">
+                                <i class="material-icons">payments</i>
+                                Cash on Delivery
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="card-payment-form" class="payment-form">
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-expiry">Expiry Date</label>
+                                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-cvv">CVV</label>
+                                <input type="text" id="card-cvv" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="card-name">Name on Card</label>
+                            <input type="text" id="card-name" placeholder="John Doe">
+                        </div>
+                    </div>
+                    
+                    <div id="online-payment-form" class="payment-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="bank-select">Select Bank</label>
+                            <select id="bank-select">
+                                <option value="">Select your bank</option>
+                                <option value="chase">Chase</option>
+                                <option value="bankofamerica">Bank of America</option>
+                                <option value="wellsfargo">Wells Fargo</option>
+                                <option value="citibank">Citibank</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="account-number">Account Number</label>
+                            <input type="text" id="account-number" placeholder="Enter your account number">
+                        </div>
+                    </div>
+                    
+                    <div id="cash-payment-form" class="payment-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="cash-amount">Amount to Pay</label>
+                            <input type="text" id="cash-amount" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="cash-notes">Notes for Delivery</label>
+                            <textarea id="cash-notes" placeholder="Any special instructions for the delivery person"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel-btn" onclick="closePaymentModal()">Cancel</button>
+                <button class="btn checkout-btn" onclick="processPayment()">Place Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Toggle Functionality
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar-container');
+            const toggleBtn = document.querySelector('.sidebar-toggle i');
+            
+            sidebar.classList.toggle('expanded');
+            
+            // Update toggle button icon
+            if (sidebar.classList.contains('expanded')) {
+                toggleBtn.textContent = 'menu_open';
+            } else {
+                toggleBtn.textContent = 'menu';
+            }
+        }
+
+        // Navigation Scroll Effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.nav-container');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Slider Functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        // Auto slide every 5 seconds
+        setInterval(nextSlide, 5000);
+
+        // Panel Toggle with Animation
+        function togglePanel(type) {
+            const panel = document.getElementById(`${type}-panel`);
+            const overlay = document.createElement('div');
+            overlay.className = 'panel-overlay';
+            
+            if (!panel.classList.contains('expanded')) {
+                document.body.appendChild(overlay);
+                setTimeout(() => overlay.classList.add('visible'), 10);
+                panel.classList.add('expanded');
+                
+                // Animate panel items
+                const items = panel.querySelectorAll('.panel-item');
+                items.forEach((item, index) => {
+                    item.style.animation = `slideInRight 0.3s ease-out ${index * 0.1}s forwards`;
+                });
+            } else {
+                const existingOverlay = document.querySelector('.panel-overlay');
+                if (existingOverlay) {
+                    existingOverlay.classList.remove('visible');
+                    setTimeout(() => existingOverlay.remove(), 300);
+                }
+                panel.classList.remove('expanded');
+            }
+        }
+
+        // Enhanced Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+
+            // Update active state in sidebar
+            document.querySelectorAll('.sidebar-menu-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(sectionId)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Update active state in navigation
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick').includes(sectionId)) {
+                    link.classList.add('active');
+                }
+            });
+
+            // If on mobile, collapse sidebar after selection
+            if (window.innerWidth <= 1024) {
+                const sidebar = document.querySelector('.sidebar-container');
+                const mainContent = document.querySelector('.main-content-wrapper');
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('sidebar-collapsed');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial sidebar state
+            const sidebar = document.querySelector('.sidebar-container');
+            const toggleBtn = document.querySelector('.sidebar-toggle i');
+            
+            sidebar.classList.remove('expanded');
+            toggleBtn.textContent = 'menu';
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.sidebar-container') && 
+                    !event.target.closest('.sidebar-toggle') && 
+                    sidebar.classList.contains('expanded')) {
+                    sidebar.classList.remove('expanded');
+                    toggleBtn.textContent = 'menu';
+                }
+            });
+
+            // Initialize other components
+            displayFoodItems();
+            displayRestaurants();
+            displayAllMenuItems();
+            initializeFilters();
+            filterFood('all');
+        });
+
+        // Restaurant data
+        const restaurants = [
+            {
+                id: 1,
+                name: "Spice Garden",
+                cuisine: "Indian",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+               
+                menu: [
+                    {
+                        id: "sg1",
+                        name: "Chicken Biryani",
+                        price: 15.99,
+                        category: "biryani",
+                        image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8",
+                      
+                    },
+                    {
+                        id: "sg2",
+                        name: "Butter Chicken",
+                        price: 16.99,
+                        category: "curry",
+                        image: "https://images.unsplash.com/photo-1603894584378-8a23f039d93a",
+                        
+                    },
+                    {
+                        id: "sg3",
+                        name: "Vegetable Korma",
+                        price: 14.99,
+                        category: "curry",
+                        image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe",
+                     
+                    },
+                    {
+                        id: "sg4",
+                        name: "Garlic Naan",
+                        price: 3.99,
+                        category: "bread",
+                        image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187",
+                        
+                    },
+                    {
+                        id: "sg5",
+                        name: "Mango Lassi",
+                        price: 4.99,
+                        category: "drinks",
+                        image: "https://images.unsplash.com/photo-1505252585461-04db1eb84625",
+                       
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Pasta Paradise",
+                cuisine: "Italian",
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+               
+                menu: [
+                    {
+                        id: "pp1",
+                        name: "Spaghetti Carbonara",
+                        price: 13.99,
+                        category: "pasta",
+                        image: "https://images.unsplash.com/photo-1612874742237-6526221588e3",
+                     
+                    },
+                    {
+                        id: "pp2",
+                        name: "Margherita Pizza",
+                        price: 14.99,
+                        category: "pizza",
+                        image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143",
+                      
+                    },
+                    {
+                        id: "pp3",
+                        name: "Lasagna",
+                        price: 15.99,
+                        category: "pasta",
+                        image: "https://images.unsplash.com/photo-1619894991066-b0849eb1f8ea",
+                      
+                    },
+                    {
+                        id: "pp4",
+                        name: "Tiramisu",
+                        price: 6.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+                      
+                    },
+                    {
+                        id: "pp5",
+                        name: "Italian Wine",
+                        price: 8.99,
+                        category: "drinks",
+                        image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3",
+                      
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "Burger House",
+                cuisine: "American",
+                rating: 4.6,
+                image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add",
+                description: "Gourmet burgers and American classics",
+                menu: [
+                    {
+                        id: "bh1",
+                        name: "Classic Cheeseburger",
+                        price: 12.99,
+                        category: "burgers",
+                        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+                      
+                    },
+                    {
+                        id: "bh2",
+                        name: "BBQ Bacon Burger",
+                        price: 14.99,
+                        category: "burgers",
+                        image: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5",
+                        description: "Beef patty with bacon and BBQ sauce"
+                    },
+                    {
+                        id: "bh3",
+                        name: "Chicken Wings",
+                        price: 11.99,
+                        category: "appetizers",
+                        image: "https://images.unsplash.com/photo-1567620835723-2b1c7d93587e",
+                       
+                    },
+                    {
+                        id: "bh4",
+                        name: "French Fries",
+                        price: 4.99,
+                        category: "sides",
+                        image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877",
+                        description: "Crispy golden fries with seasoning"
+                    },
+                    {
+                        id: "bh5",
+                        name: "Milkshake",
+                        price: 5.99,
+                        category: "drinks",
+                        image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699",
+                       
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: "Sushi Master",
+                cuisine: "Japanese",
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+               
+                menu: [
+                    {
+                        id: "sm1",
+                        name: "California Roll",
+                        price: 12.99,
+                        category: "sushi",
+                        image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+                      
+                    },
+                    {
+                        id: "sm2",
+                        name: "Salmon Nigiri",
+                        price: 14.99,
+                        category: "sushi",
+                        image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+                       
+                    },
+                    {
+                        id: "sm3",
+                        name: "Miso Soup",
+                        price: 5.99,
+                        category: "soups",
+                        image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+                    
+                    },
+                    {
+                        id: "sm4",
+                        name: "Tempura Udon",
+                        price: 13.99,
+                        category: "noodles",
+                        image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+                       
+                    },
+                    {
+                        id: "sm5",
+                        name: "Green Tea",
+                        price: 3.99,
+                        category: "drinks",
+                        image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c",
+                       
+                    }
+                ]
+            },
+            {
+                id: 5,
+                name: "Taco Fiesta",
+                cuisine: "Mexican",
+                rating: 4.5,
+                image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+            
+                menu: [
+                    {
+                        id: "tf1",
+                        name: "Beef Tacos",
+                        price: 9.99,
+                        category: "tacos",
+                        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+                      
+                    },
+                    {
+                        id: "tf2",
+                        name: "Chicken Burrito",
+                        price: 11.99,
+                        category: "burritos",
+                        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+                       
+                    },
+                    {
+                        id: "tf3",
+                        name: "Guacamole & Chips",
+                        price: 7.99,
+                        category: "appetizers",
+                        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+                       
+                    },
+                    {
+                        id: "tf4",
+                        name: "Churros",
+                        price: 5.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+                      
+                    },
+                    {
+                        id: "tf5",
+                        name: "Horchata",
+                        price: 4.99,
+                        category: "drinks",
+                        image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47",
+                    
+                    }
+                ]
+            },
+            {
+                id: 6,
+                name: "Green Kitchen",
+                cuisine: "Vegan",
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+              
+                menu: [
+                    {
+                        id: "gk1",
+                        name: "Buddha Bowl",
+                        price: 13.99,
+                        category: "vegan",
+                        image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+                      
+                    },
+                    {
+                        id: "gk2",
+                        name: "Vegan Burger",
+                        price: 12.99,
+                        category: "burgers",
+                        image: "https://images.unsplash.com/photo-1525059696034-4967a8e1dca2",
+                       
+                    },
+                    {
+                        id: "gk3",
+                        name: "Kale Salad",
+                        price: 10.99,
+                        category: "salads",
+                        image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe",
+                      
+                    },
+                    {
+                        id: "gk4",
+                        name: "Vegan Pizza",
+                        price: 14.99,
+                        category: "pizza",
+                        image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143",
+                     
+                    },
+                    {
+                        id: "gk5",
+                        name: "Smoothie Bowl",
+                        price: 9.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1505252585461-04db1eb84625",
+                       
+                    }
+                ]
+            },
+            {
+                id: 7,
+                name: "Sweet Treats",
+                cuisine: "Desserts",
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587",
+             
+                menu: [
+                    {
+                        id: "st1",
+                        name: "Chocolate Cake",
+                        price: 8.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587",
+                       
+                    },
+                    {
+                        id: "st2",
+                        name: "Cheesecake",
+                        price: 7.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1524351199678-941a58a3df50",
+                       
+                    },
+                    {
+                        id: "st3",
+                        name: "Ice Cream Sundae",
+                        price: 6.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb",
+                       
+                    },
+                    {
+                        id: "st4",
+                        name: "Apple Pie",
+                        price: 5.99,
+                        category: "desserts",
+                        image: "https://images.unsplash.com/photo-1621743478914-4b5d3e0e0906",
+                       
+                    },
+                    {
+                        id: "st5",
+                        name: "Hot Chocolate",
+                        price: 4.99,
+                        category: "drinks",
+                        image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699",
+                      
+                    }
+                ]
+            }
+        ];
+
+        // Display restaurants
+        function displayRestaurants() {
+            const restaurantGrid = document.getElementById('restaurant-grid');
+            restaurantGrid.innerHTML = '';
+
+            restaurants.forEach(restaurant => {
+                const card = document.createElement('div');
+                card.className = 'restaurant-card';
+                card.onclick = () => displayRestaurantMenu(restaurant);
+
+                card.innerHTML = `
+                    <div class="restaurant-image" style="background-image: url('${restaurant.image}')"></div>
+                    <div class="restaurant-info">
+                        <h3 class="restaurant-title">${restaurant.name}</h3>
+                        <div class="restaurant-cuisine">
+                            <i class="fas fa-utensils"></i>
+                            ${restaurant.cuisine}
+                        </div>
+                        <div class="restaurant-rating">
+                            <div class="stars">
+                                ${generateStars(restaurant.rating)}
+                            </div>
+                            <span>${restaurant.rating}</span>
+                        </div>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-clock"></i>
+                                ${restaurant.deliveryTime || '30-40'} min
+                            </div>
+                            <div class="restaurant-meta-item">
+                                <i class="fas fa-motorcycle"></i>
+                                ${restaurant.deliveryFee || '$2.99'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                restaurantGrid.appendChild(card);
+            });
+        }
+
+        // Helper function to generate star ratings
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else if (i - 0.5 <= rating) {
+                    stars += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            return stars;
+        }
+
+        // Display restaurant menu
+        function displayRestaurantMenu(restaurant) {
+            const menuItems = document.getElementById('menu-items');
+            const menuTitle = document.querySelector('.menu-title');
+            const menuCuisine = document.querySelector('.menu-cuisine');
+            const menuDisplay = document.getElementById('menu-display');
+
+            // Update menu header with restaurant info
+            menuTitle.textContent = restaurant.name;
+            menuCuisine.textContent = restaurant.cuisine;
+
+            // Show menu display section
+            menuDisplay.classList.add('active');
+
+            // Clear existing menu items
+            menuItems.innerHTML = '';
+
+            // Add menu items from the selected restaurant
+            restaurant.menu.forEach((item, index) => {
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item-card';
+                menuItem.style.animationDelay = `${index * 0.1}s`;
+                menuItem.innerHTML = `
+                    <div class="menu-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="restaurant-badge">${restaurant.name}</div>
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-title">${item.name}</h3>
+                            <span class="menu-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="menu-item-meta">
+                            <div class="menu-item-rating">
+                                <span class="stars">${'★'.repeat(Math.floor(restaurant.rating))}${'☆'.repeat(5 - Math.floor(restaurant.rating))}</span>
+                                <span>${restaurant.rating}</span>
+                            </div>
+                            <div class="menu-item-time">
+                                <i class="material-icons">access_time</i>
+                                <span>30-40 min</span>
+                            </div>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                menuItems.appendChild(menuItem);
+            });
+
+            // Update menu categories to show active state
+            const menuCategories = document.querySelectorAll('.menu-category');
+            menuCategories.forEach(category => {
+                category.classList.remove('active');
+                if (category.textContent.toLowerCase() === 'all items') {
+                    category.classList.add('active');
+                }
+            });
+
+            // Scroll to menu display
+            menuDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Function to reset menu display to show all items
+        function resetMenuDisplay() {
+            const menuTitle = document.querySelector('.menu-title');
+            const menuCuisine = document.querySelector('.menu-cuisine');
+            const menuDisplay = document.getElementById('menu-display');
+            
+            // Reset header
+            menuTitle.textContent = 'All Menu Items';
+            menuCuisine.textContent = 'Browse through our delicious menu items';
+            
+            // Hide menu display section
+            menuDisplay.classList.remove('active');
+            
+            // Display all menu items
+            displayAllMenuItems();
+        }
+
+        // Function to display all menu items initially
+        function displayAllMenuItems() {
+            const menuItems = document.getElementById('menu-items');
+            if (!menuItems) return;
+
+            const allMenuItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            menuItems.innerHTML = allMenuItems.map((item, index) => `
+                <div class="menu-item-card" style="animation-delay: ${index * 0.1}s">
+                    <div class="menu-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="restaurant-badge">${item.restaurantName}</div>
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-title">${item.name}</h3>
+                            <span class="menu-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="menu-item-meta">
+                            <div class="menu-item-rating">
+                                <div class="stars">★★★★★</div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="menu-item-time">
+                                <i class="material-icons">access_time</i>
+                                <span>30-40 min</span>
+                            </div>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add these functions
+        function initializeFilters() {
+            const filterInputs = document.querySelectorAll('.filter-options input');
+            filterInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    applyFilters();
+                });
+            });
+        }
+
+        function applyFilters() {
+            const activeFilters = document.querySelectorAll('.filter-option.active');
+            const foodItems = document.querySelectorAll('.food-item-card');
+            
+            foodItems.forEach(item => {
+                let shouldShow = true;
+                const itemType = item.getAttribute('data-type');
+                const itemCuisine = item.getAttribute('data-cuisine');
+                const itemPrice = parseFloat(item.getAttribute('data-price'));
+                
+                activeFilters.forEach(filter => {
+                    const filterType = filter.getAttribute('onclick').match(/toggleFilter\('(.+?)'\)/)[1];
+                    
+                    if (filterType === 'biryani' && itemType !== 'biryani') shouldShow = false;
+                    if (filterType === 'pizza' && itemType !== 'pizza') shouldShow = false;
+                    if (filterType === 'burger' && itemType !== 'burger') shouldShow = false;
+                    if (filterType === 'indian' && itemCuisine !== 'indian') shouldShow = false;
+                    if (filterType === 'italian' && itemCuisine !== 'italian') shouldShow = false;
+                    if (filterType === 'chinese' && itemCuisine !== 'chinese') shouldShow = false;
+                    if (filterType === 'low' && itemPrice >= 200) shouldShow = false;
+                    if (filterType === 'medium' && (itemPrice < 200 || itemPrice > 500)) shouldShow = false;
+                    if (filterType === 'high' && itemPrice <= 500) shouldShow = false;
+                });
+                
+                if (shouldShow) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeInScale 0.5s ease-out';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function resetFilters() {
+            const filterInputs = document.querySelectorAll('.filter-options input');
+            filterInputs.forEach(input => {
+                input.checked = false;
+            });
+            displayRestaurants();
+        }
+
+        function displayFilteredRestaurants(filteredRestaurants) {
+            const restaurantHTML = filteredRestaurants.map(restaurant => `
+                <div class="restaurant-card">
+                    <div class="restaurant-image" style="background-image: url('${restaurant.image}')"></div>
+                    <div class="restaurant-info">
+                        <h3 class="restaurant-title">${restaurant.name}</h3>
+                        <p class="restaurant-cuisine">${restaurant.cuisine}</p>
+                        <div class="restaurant-rating">
+                            <div class="stars">★★★★★</div>
+                            <span>${restaurant.rating}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('featured-home').innerHTML = restaurantHTML;
+        }
+
+        // Add these functions
+        function displayFoodItems() {
+            const foodItemsGrid = document.getElementById('food-items-grid');
+            if (!foodItemsGrid) return;
+
+            const allFoodItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            foodItemsGrid.innerHTML = allFoodItems.map(item => `
+                <div class="food-item-card" data-item-name="${item.name}" data-category="${item.category}">
+                    <div class="food-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                        <span class="food-item-badge">${item.restaurantName}</span>
+                    </div>
+                    <div class="food-item-info">
+                        <div class="food-item-header">
+                            <h3 class="food-item-title">${item.name}</h3>
+                            <span class="food-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="food-item-meta">
+                            <div class="food-item-rating">
+                                <div class="stars">★★★★★</div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="food-item-time">
+                                <i class="material-icons">schedule</i>
+                                <span>15-20 min</span>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                            <i class="material-icons">shopping_cart</i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Enhanced Search functionality
+        function searchFood(event, source) {
+            const searchInput = event.target;
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const foodItemsGrid = document.getElementById('food-items-grid');
+            
+            if (!foodItemsGrid) return;
+
+            // Get all food items from all restaurants
+            const allFoodItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            // If search term is empty, show all items
+            if (!searchTerm) {
+                displayAllFoodItems(allFoodItems);
+                return;
+            }
+
+            // Filter food items based on search term
+            const filteredItems = allFoodItems.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.category.toLowerCase().includes(searchTerm) ||
+                item.restaurantName.toLowerCase().includes(searchTerm)
+            );
+
+            // Clear current food items
+            foodItemsGrid.innerHTML = '';
+
+            // Display filtered items with animation
+            filteredItems.forEach((item, index) => {
+                const foodItem = document.createElement('div');
+                foodItem.className = 'food-item-card';
+                foodItem.style.animation = `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`;
+                foodItem.style.opacity = '0';
+                
+                foodItem.innerHTML = `
+                    <div class="food-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="food-item-badge">${item.restaurantName}</div>
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="food-item-info">
+                        <div class="food-item-header">
+                            <h3 class="food-item-title">${item.name}</h3>
+                            <span class="food-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="food-item-meta">
+                            <div class="food-item-rating">
+                                <div class="food-item-stars">
+                                    ${'★'.repeat(Math.floor(item.restaurantRating))}${'☆'.repeat(5 - Math.floor(item.restaurantRating))}
+                                </div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="food-item-time">
+                                <i class="material-icons">schedule</i>
+                                <span>30-40 min</span>
+                            </div>
+                        </div>
+                        <div class="food-item-actions">
+                            <button class="action-btn add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                foodItemsGrid.appendChild(foodItem);
+            });
+
+            // Show "no results" message if no items found
+            if (filteredItems.length === 0) {
+                foodItemsGrid.innerHTML = `
+                    <div class="no-results" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+                        <i class="material-icons" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;">search_off</i>
+                        <h3 style="color: #666; margin-bottom: 0.5rem;">No items found</h3>
+                        <p style="color: #999;">Try searching with different keywords</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Function to display all food items
+        function displayAllFoodItems(items) {
+            const foodItemsGrid = document.getElementById('food-items-grid');
+            if (!foodItemsGrid) return;
+
+            foodItemsGrid.innerHTML = items.map((item, index) => `
+                <div class="food-item-card" style="animation: fadeInUp 0.5s ease-out ${index * 0.1}s forwards; opacity: 0;">
+                    <div class="food-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="food-item-badge">${item.restaurantName}</div>
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="food-item-info">
+                        <div class="food-item-header">
+                            <h3 class="food-item-title">${item.name}</h3>
+                            <span class="food-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="food-item-meta">
+                            <div class="food-item-rating">
+                                <div class="food-item-stars">
+                                    ${'★'.repeat(Math.floor(item.restaurantRating))}${'☆'.repeat(5 - Math.floor(item.restaurantRating))}
+                                </div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="food-item-time">
+                                <i class="material-icons">schedule</i>
+                                <span>30-40 min</span>
+                            </div>
+                        </div>
+                        <div class="food-item-actions">
+                            <button class="add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add debounce function to optimize search performance
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Apply debounce to search inputs
+        document.querySelectorAll('.search-input, .nav-search input').forEach(input => {
+            input.addEventListener('input', debounce(function(e) {
+                searchFood(e, e.target.closest('.nav-search') ? 'nav' : 'hero');
+            }, 300));
+        });
+
+        // Add these variables
+        let cart = [];
+        let wishlistItems = [];
+        let selectedOrderType = 'delivery';
+        let deliveryFee = 2.99;
+
+        // Store wishlist items in localStorage
+        function saveWishlistToStorage() {
+            localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+        }
+
+        function loadWishlistFromStorage() {
+            const stored = localStorage.getItem('wishlistItems');
+            if (stored) {
+                wishlistItems = JSON.parse(stored);
+                updateWishlistUI();
+                updateWishlistBadge();
+            }
+        }
+
+        // Enhanced addToWishlist function
+        function addToWishlist(name, price, image, category) {
+            if (!wishlistItems.some(item => item.name === name)) {
+                wishlistItems.push({ 
+                    name, 
+                    price, 
+                    image, 
+                    category,
+                    addedAt: new Date().toISOString()
+                });
+                saveWishlistToStorage();
+                updateWishlistUI();
+                updateWishlistBadge();
+                showToast(`Added ${name} to wishlist`);
+                
+                // Update heart icon state
+                const heartBtn = document.querySelector(`[data-item-name="${name}"] .wishlist-btn`);
+                if (heartBtn) {
+                    heartBtn.classList.add('active');
+                    heartBtn.innerHTML = '<i class="material-icons">favorite</i>';
+                }
+            }
+        }
+
+        // Enhanced updateWishlistUI function
+        function updateWishlistUI() {
+            const wishlistContainer = document.querySelector('.wishlist-items');
+            if (!wishlistContainer) return;
+
+            if (wishlistItems.length === 0) {
+                wishlistContainer.innerHTML = `
+                    <div class="empty-wishlist">
+                        <i class="material-icons">favorite_border</i>
+                        <p>Your wishlist is empty</p>
+                        <button class="btn" onclick="togglePanel('wishlist')">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+
+            wishlistContainer.innerHTML = wishlistItems.map(item => `
+                <div class="wishlist-card" data-item-name="${item.name}">
+                    <div class="wishlist-card-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <button class="remove-from-wishlist" onclick="removeFromWishlist('${item.name}')">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </div>
+                    <div class="wishlist-card-info">
+                        <h3>${item.name}</h3>
+                        <div class="wishlist-card-price">$${item.price.toFixed(2)}</div>
+                        <button class="move-to-cart-btn" onclick="moveToCart('${item.name}')">
+                            <i class="material-icons">shopping_cart</i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Enhanced moveToCart function
+        function moveToCart(name) {
+            const item = wishlistItems.find(item => item.name === name);
+            if (item) {
+                addToCart(item.name, item.price, item.image);
+                removeFromWishlist(name);
+                showToast(`${name} moved to cart`);
+            }
+        }
+
+        // Enhanced removeFromWishlist function
+        function removeFromWishlist(name) {
+            wishlistItems = wishlistItems.filter(item => item.name !== name);
+            saveWishlistToStorage();
+            updateWishlistUI();
+            updateWishlistBadge();
+            
+            // Update heart icon state
+            const heartBtn = document.querySelector(`[data-item-name="${name}"] .wishlist-btn`);
+            if (heartBtn) {
+                heartBtn.classList.remove('active');
+                heartBtn.innerHTML = '<i class="material-icons">favorite_border</i>';
+            }
+            
+            showToast(`Removed ${name} from wishlist`);
+        }
+
+        // Store cart items in localStorage
+        function saveCartToStorage() {
+            localStorage.setItem('cartItems', JSON.stringify(cart));
+        }
+
+        function loadCartFromStorage() {
+            const stored = localStorage.getItem('cartItems');
+            if (stored) {
+                cart = JSON.parse(stored);
+                updateCart();
+                updateCartBadge();
+            }
+        }
+
+        // Enhanced addToCart function
+        function addToCart(name, price, image) {
+            // Check if item already exists in cart
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                // If item exists, increase quantity
+                existingItem.quantity = (existingItem.quantity || 1) + 1;
+            } else {
+                // If item doesn't exist, add it to cart
+                cart.push({ 
+                    name, 
+                    price, 
+                    image,
+                    quantity: 1,
+                    addedAt: new Date().toISOString()
+                });
+            }
+            
+            // Save to localStorage and update UI
+            saveCartToStorage();
+            updateCart();
+            updateCartBadge();
+            
+            // Show toast notification
+            showToast(`Added ${name} to cart`);
+            
+            // Open cart panel
+            togglePanel('cart');
+        }
+
+        // Enhanced removeFromCart function
+        function removeFromCart(name) {
+            // Find the item in the cart
+            const itemIndex = cart.findIndex(item => item.name === name);
+            
+            if (itemIndex !== -1) {
+                // Remove the item
+                const removedItem = cart[itemIndex];
+                cart.splice(itemIndex, 1);
+                
+                // Save to localStorage and update UI
+                saveCartToStorage();
+                updateCart();
+                updateCartBadge();
+                
+                // Show toast notification
+                showToast(`Removed ${removedItem.name} from cart`);
+            }
+        }
+
+        // Update cart badge
+        function updateCartBadge() {
+            const cartCount = document.getElementById('cart-count');
+            const navCartCount = document.getElementById('nav-cart-count');
+            
+            if (cartCount) {
+                cartCount.textContent = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            }
+            
+            if (navCartCount) {
+                navCartCount.textContent = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            }
+        }
+
+        // Enhanced updateCart function
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            const cartTotal = document.getElementById('cart-total');
+            
+            if (!cartItems) return;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="material-icons">shopping_cart</i>
+                        <p>Your cart is empty</p>
+                        <button class="btn" onclick="togglePanel('cart')">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-wishlist-item">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="cart-wishlist-item-info">
+                        <h3 class="cart-wishlist-item-title">${item.name}</h3>
+                        <p class="cart-wishlist-item-price">$${item.price.toFixed(2)}</p>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity('${item.name}', ${(item.quantity || 1) - 1})">-</button>
+                            <input type="number" class="quantity-input" value="${item.quantity || 1}" min="1" onchange="updateQuantity('${item.name}', this.value)">
+                            <button class="quantity-btn" onclick="updateQuantity('${item.name}', ${(item.quantity || 1) + 1})">+</button>
+                        </div>
+                    </div>
+                    <button class="remove-item" onclick="removeFromCart('${item.name}')">✕</button>
+                </div>
+            `).join('');
+            
+            // Update cart counts
+            updateCartBadge();
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+            const total = subtotal + (selectedOrderType === 'delivery' ? deliveryFee : 0);
+            
+            if (cartSubtotal) {
+                cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            }
+            
+            if (cartTotal) {
+                cartTotal.textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        // Enhanced updateQuantity function
+        function updateQuantity(itemName, newQuantity) {
+            const item = cart.find(item => item.name === itemName);
+            if (item) {
+                // Ensure quantity is at least 1
+                item.quantity = Math.max(1, parseInt(newQuantity));
+                
+                // Save to localStorage and update UI
+                saveCartToStorage();
+                updateCart();
+            }
+        }
+
+        // Enhanced checkout function
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Your cart is empty!');
+                return;
+            }
+            
+            // Show payment modal instead of directly processing
+            showPaymentModal();
+        }
+
+        // Payment modal functions
+        function showPaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const orderItems = document.getElementById('payment-order-items');
+            const subtotal = document.getElementById('payment-subtotal');
+            const total = document.getElementById('payment-total');
+            const cashAmount = document.getElementById('cash-amount');
+            
+            // Calculate totals
+            const calculatedSubtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+            const calculatedTotal = calculatedSubtotal + (selectedOrderType === 'delivery' ? deliveryFee : 0);
+            
+            // Update order items in modal
+            orderItems.innerHTML = cart.map(item => `
+                <div class="payment-order-item">
+                    <div class="payment-item-info">
+                        <span class="payment-item-name">${item.name}</span>
+                        <span class="payment-item-quantity">x${item.quantity || 1}</span>
+                    </div>
+                    <span class="payment-item-price">$${(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            // Update totals
+            subtotal.textContent = `$${calculatedSubtotal.toFixed(2)}`;
+            total.textContent = `$${calculatedTotal.toFixed(2)}`;
+            cashAmount.value = `$${calculatedTotal.toFixed(2)}`;
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Set default payment method
+            selectPaymentMethod('card');
+        }
+        
+        function closePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            modal.style.display = 'none';
+        }
+        
+        function selectPaymentMethod(method) {
+            // Hide all payment forms
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.style.display = 'none';
+            });
+            
+            // Show selected payment form
+            document.getElementById(`${method}-payment-form`).style.display = 'block';
+            
+            // Update radio button
+            document.getElementById(`${method}-payment`).checked = true;
+        }
+        
+        function processPayment() {
+            // Get selected payment method
+            const selectedMethod = document.querySelector('input[name="payment-method"]:checked').id.replace('-payment', '');
+            
+            // Validate payment details based on method
+            let isValid = true;
+            let errorMessage = '';
+            
+            if (selectedMethod === 'card') {
+                const cardNumber = document.getElementById('card-number').value;
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvv = document.getElementById('card-cvv').value;
+                const cardName = document.getElementById('card-name').value;
+                
+                if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
+                    isValid = false;
+                    errorMessage = 'Please fill in all card details';
+                }
+            } else if (selectedMethod === 'online') {
+                const bankSelect = document.getElementById('bank-select').value;
+                const accountNumber = document.getElementById('account-number').value;
+                
+                if (!bankSelect || !accountNumber) {
+                    isValid = false;
+                    errorMessage = 'Please select a bank and enter your account number';
+                }
+            }
+            
+            if (!isValid) {
+                showToast(errorMessage);
+                return;
+            }
+            
+            // Create order details
+            const orderDetails = {
+                items: cart,
+                orderType: selectedOrderType,
+                paymentMethod: selectedMethod,
+                subtotal: cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0),
+                deliveryFee: selectedOrderType === 'delivery' ? deliveryFee : 0,
+                total: cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0) + (selectedOrderType === 'delivery' ? deliveryFee : 0),
+                orderDate: new Date().toISOString()
+            };
+            
+            // In a real application, you would send this to a server
+            console.log('Order Details:', orderDetails);
+            
+            // Clear the cart
+            cart = [];
+            saveCartToStorage();
+            updateCart();
+            updateCartBadge();
+            
+            // Close payment modal
+            closePaymentModal();
+            
+            // Show success message
+            showToast('Order placed successfully! Thank you for your purchase.');
+            
+            // Close the cart panel
+            togglePanel('cart');
+        }
+
+        // Add event listeners for payment form inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format card number with spaces
+            const cardNumberInput = document.getElementById('card-number');
+            if (cardNumberInput) {
+                cardNumberInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    let formattedValue = '';
+                    
+                    for (let i = 0; i < value.length; i++) {
+                        if (i > 0 && i % 4 === 0) {
+                            formattedValue += ' ';
+                        }
+                        formattedValue += value[i];
+                    }
+                    
+                    e.target.value = formattedValue;
+                });
+            }
+            
+            // Format expiry date
+            const cardExpiryInput = document.getElementById('card-expiry');
+            if (cardExpiryInput) {
+                cardExpiryInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2);
+                    }
+                    
+                    e.target.value = value;
+                });
+            }
+            
+            // Restrict CVV to numbers only
+            const cardCvvInput = document.getElementById('card-cvv');
+            if (cardCvvInput) {
+                cardCvvInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            }
+        });
+
+        // Add these functions
+        function filterFood(category) {
+            const filterOptions = document.querySelectorAll('.filter-option');
+            filterOptions.forEach(option => {
+                if (option.getAttribute('data-category') === category) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+
+            const foodItemsGrid = document.getElementById('food-items-grid');
+            if (!foodItemsGrid) return;
+
+            const allItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            const filteredItems = category === 'all' 
+                ? allItems 
+                : allItems.filter(item => item.category === category);
+
+            foodItemsGrid.innerHTML = filteredItems.map(item => `
+                <div class="food-item-card" data-category="${item.category}">
+                    <div class="food-item-image" style="background-image: url('${item.image}')">
+                        <span class="food-item-badge">${item.restaurantName}</span>
+                        <button class="wishlist-btn" onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="food-item-info">
+                        <div class="food-item-header">
+                            <h3 class="food-item-title">${item.name}</h3>
+                            <span class="food-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="food-item-meta">
+                            <div class="food-item-rating">
+                                <div class="stars">★★★★★</div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="food-item-time">
+                                <i class="material-icons">schedule</i>
+                                <span>15-20 min</span>
+                            </div>
+                        </div>
+                        <p class="food-item-description">${item.description}</p>
+                        <div class="food-item-actions">
+                            <button class="action-btn add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add fade-in animation to new items
+            const newItems = foodItemsGrid.querySelectorAll('.food-item-card');
+            newItems.forEach((item, index) => {
+                item.style.animation = `fadeInScale 0.5s ease-out ${index * 0.1}s`;
+            });
+        }
+
+        function refreshRecommendations() {
+            const recommendationsGrid = document.getElementById('recommendations-grid');
+            if (!recommendationsGrid) return;
+
+            // Get all food items
+            const allFoodItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            // Sort by rating and get top 5
+            const recommendedItems = [...allFoodItems]
+                .sort((a, b) => b.restaurantRating - a.restaurantRating)
+                .slice(0, 5);
+
+            recommendationsGrid.innerHTML = recommendedItems.map(item => `
+                <div class="food-item-card">
+                    <div class="food-item-image" style="background-image: url('${item.image}')">
+                        <span class="food-item-badge">${item.restaurantName}</span>
+                    </div>
+                    <div class="food-item-info">
+                        <div class="food-item-header">
+                            <h3 class="food-item-title">${item.name}</h3>
+                            <span class="food-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="food-item-rating">
+                            <div class="stars">★★★★★</div>
+                            <span>${item.restaurantRating}</span>
+                        </div>
+                        <div class="food-item-time">
+                            <i class="time-icon">⏱️</i>
+                            <span>15-20 min</span>
+                        </div>
+                        <div class="food-item-actions">
+                            <button class="action-btn add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showProfile() {
+            showToast('Profile section coming soon!');
+        }
+
+        function sortItems(criteria) {
+            const menuItems = document.getElementById('menu-items');
+            if (!menuItems) return;
+
+            // Get all menu items from all restaurants
+            const allMenuItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            // Sort items based on criteria
+            let sortedItems;
+            switch(criteria) {
+                case 'rating':
+                    sortedItems = [...allMenuItems].sort((a, b) => b.restaurantRating - a.restaurantRating);
+                    break;
+                case 'price-low':
+                    sortedItems = [...allMenuItems].sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    sortedItems = [...allMenuItems].sort((a, b) => b.price - a.price);
+                    break;
+                case 'delivery':
+                    sortedItems = [...allMenuItems].sort((a, b) => a.restaurantRating - b.restaurantRating);
+                    break;
+                case 'popularity':
+                    sortedItems = [...allMenuItems].sort((a, b) => b.restaurantRating - a.restaurantRating);
+                    break;
+                default:
+                    sortedItems = allMenuItems;
+            }
+
+            // Display sorted items in the menu container
+            menuItems.innerHTML = sortedItems.map((item, index) => `
+                <div class="menu-item-card" style="animation-delay: ${index * 0.1}s">
+                    <div class="menu-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="restaurant-badge">${item.restaurantName}</div>
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-title">${item.name}</h3>
+                            <span class="menu-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="menu-item-meta">
+                            <div class="menu-item-rating">
+                                <span class="stars">${'★'.repeat(Math.floor(item.restaurantRating))}${'☆'.repeat(5 - Math.floor(item.restaurantRating))}</span>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="menu-item-time">
+                                <i class="material-icons">access_time</i>
+                                <span>30-40 min</span>
+                            </div>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add fade-in animation to new items
+            const newItems = menuItems.querySelectorAll('.menu-item-card');
+            newItems.forEach((item, index) => {
+                item.style.animation = `fadeInScale 0.5s ease-out ${index * 0.1}s`;
+            });
+        }
+
+        function toggleFilter(filterType) {
+            const filterOption = event.target.closest('.filter-option');
+            filterOption.classList.toggle('active');
+            applyFilters();
+        }
+
+        // Recommendations scroll
+        function scrollRecommendations(direction) {
+            const container = document.querySelector('.recommendations-grid');
+            const scrollAmount = 300;
+            
+            if (direction === 'left') {
+                container.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else {
+                container.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Search restaurants
+        function searchRestaurants() {
+            const searchInput = document.getElementById('restaurantSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const restaurantCards = document.querySelectorAll('.restaurant-card');
+
+            restaurantCards.forEach(card => {
+                const title = card.querySelector('.restaurant-title').textContent.toLowerCase();
+                const cuisine = card.querySelector('.restaurant-cuisine').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || cuisine.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Add event listener for search input
+        document.getElementById('restaurantSearch').addEventListener('input', searchRestaurants);
+
+        // Add click handlers for search filters
+        document.querySelectorAll('.search-filter').forEach(filter => {
+            filter.addEventListener('click', function() {
+                // Remove active class from all filters
+                document.querySelectorAll('.search-filter').forEach(f => f.classList.remove('active'));
+                // Add active class to clicked filter
+                this.classList.add('active');
+                // Add your filter logic here
+            });
+        });
+
+        // Add this function to display all menu items when the page loads
+        function displayAllMenuItems() {
+            const menuItems = document.getElementById('menu-items');
+            if (!menuItems) return;
+
+            const allMenuItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            menuItems.innerHTML = allMenuItems.map((item, index) => `
+                <div class="menu-item-card" style="animation-delay: ${index * 0.1}s">
+                    <div class="menu-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="restaurant-badge">${item.restaurantName}</div>
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                    </div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-title">${item.name}</h3>
+                            <span class="menu-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="menu-item-meta">
+                            <div class="menu-item-rating">
+                                <div class="stars">★★★★★</div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="menu-item-time">
+                                <i class="material-icons">schedule</i>
+                                <span>15-20 min</span>
+                            </div>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterMenuItems(category) {
+            const menuCategories = document.querySelectorAll('.menu-category');
+            menuCategories.forEach(cat => {
+                if (cat.textContent.toLowerCase().includes(category)) {
+                    cat.classList.add('active');
+                } else {
+                    cat.classList.remove('active');
+                }
+            });
+
+            const menuItems = document.getElementById('menu-items');
+            if (!menuItems) return;
+
+            const allMenuItems = restaurants.flatMap(restaurant => 
+                restaurant.menu.map(item => ({
+                    ...item,
+                    restaurantName: restaurant.name,
+                    restaurantRating: restaurant.rating
+                }))
+            );
+
+            const filteredItems = category === 'all' 
+                ? allMenuItems 
+                : allMenuItems.filter(item => item.category === category);
+
+            menuItems.innerHTML = filteredItems.map((item, index) => `
+                <div class="menu-item-card" style="animation-delay: ${index * 0.1}s">
+                    <div class="menu-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                        <button class="wishlist-btn ${wishlistItems.some(w => w.name === item.name) ? 'active' : ''}" 
+                                onclick="addToWishlist('${item.name}', ${item.price}, '${item.image}', '${item.category}')">
+                            <i class="material-icons">
+                                ${wishlistItems.some(w => w.name === item.name) ? 'favorite' : 'favorite_border'}
+                            </i>
+                        </button>
+                        <span class="restaurant-badge">${item.restaurantName}</span>
+                    </div>
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3 class="menu-item-title">${item.name}</h3>
+                            <span class="menu-item-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="menu-item-meta">
+                            <div class="menu-item-rating">
+                                <div class="stars">★★★★★</div>
+                                <span>${item.restaurantRating}</span>
+                            </div>
+                            <div class="menu-item-time">
+                                <i class="material-icons">schedule</i>
+                                <span>15-20 min</span>
+                            </div>
+                        </div>
+                        <div class="menu-item-actions">
+                            <button class="add-to-cart" onclick="addToCart('${item.name}', ${item.price}, '${item.image}')">
+                                <i class="material-icons">shopping_cart</i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add this function for restaurant scrolling
+        function scrollRestaurants(direction) {
+            const container = document.querySelector('.restaurant-grid');
+            const scrollAmount = 350; // Adjust based on card width + gap
+            
+            if (direction === 'left') {
+                container.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            } else {
+                container.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    </script>
+</body>
+</html>
